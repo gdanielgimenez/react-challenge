@@ -3,19 +3,15 @@ import { useFormik } from "formik";
 import {Redirect, useHistory} from 'react-router-dom';
 import axios from "axios";
 import "./styles.css";
-
+import {Button, Card, Container,Grid, Row,Col,Alert,Form} from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const validate = (values) =>{
     let errors ={};
-    if(!values.firstName){
-        errors.firstName ="Required";
-    }else if(values.firstName.length <4){
-        errors.firstName="Must be longer than 4 characters"
-    }
-    if(!values.lastName){
-        errors.lastName="Required"
-    }else if(values.lastName.length <4){
-        errors.lastName="must be at least 4 characters long"
+    if(!values.password){
+        errors.password ="Required";
+    }else if(values.password.length <4){
+        errors.password="Must be longer than 3 characters"
     }
     if(!values.email){
         errors.email="required"
@@ -31,15 +27,14 @@ function Login(props){
     const SignupForm = () => {
         const formik = useFormik({
           initialValues: {
-              firstName:"",
-              lastName:"", 
+              password:"", 
               email: "" 
               },
               validate,
           onSubmit: async(values) => {
             //alert(JSON.stringify(values, null, 2));
             //token(values.email,values.lastName)
-            const data ={email:values.email,password:values.lastName} 
+            const data ={email:values.email,password:values.password} 
              await axios.post('http://challenge-react.alkemy.org',data)
             .then(res =>{
               if(res.data.token){
@@ -59,30 +54,29 @@ function Login(props){
           }
         });
         return (
-          <div>
-          <form onSubmit={formik.handleSubmit}>
-            <label htmlFor="firstName">First Name</label>
-            <input
-              id="firstName"
-              name="firstName"
-              type="text"
-              onChange={formik.handleChange}
-              onBlur ={formik.handleBlur}
-              value={formik.values.firstName}
-            />
-            {formik.touched.firstName && formik.errors.firstName ? <div>{formik.errors.firstName}</div>:null}
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.lastName}
-            />
-            {formik.touched.lastName && formik.errors.lastName ? <div>{formik.errors.lastName}</div>:null}
-            <label htmlFor="email">Email Address</label>
-            <input
+          <Container rows={3} variant="center">
+          <Form onSubmit={formik.handleSubmit}>
+           <Form.Group >
+            <Form.Label   htmlFor="password">Password</Form.Label>
+            <Form.Control
+                id="password"
+                name="password"
+                type="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+                />
+                
+                {formik.touched.password && formik.errors.password ? (
+                
+                  <Alert variant="danger mt-3 mb-2">
+                  {formik.errors.password}
+                  </Alert>
+                  ):null}
+                  </Form.Group>
+            <Form.Group>
+            <Form.Label htmlFor="email">Email Address</Form.Label>
+            <Form.Control
               id="email"
               name="email"
               type="email"
@@ -90,17 +84,18 @@ function Login(props){
               onBlur={formik.handleBlur}
               value={formik.values.email}
             />
-            {formik.touched.email && formik.errors.email ? <div>{formik.errors.email}</div>:null}
-            <br/>
-            <button type="submit">Submit</button>
-          </form>
-          </div>
+            {formik.touched.email && formik.errors.email ? <Alert variant="danger mt-3 mn-2">{formik.errors.email}</Alert>:null}
+           </Form.Group>
+           <br/>
+            <Button type="submit" variant="primary" size="lg">Submit</Button>
+          </Form>
+          </Container>
         );
       };
       return(
-          <div>
+          <Container sm={6} lg={8} variant="center">
               <SignupForm />
-          </div>
+          </Container>
       )      
 }
 export default Login;

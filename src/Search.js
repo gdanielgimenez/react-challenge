@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { useFormik } from "formik";
 import { heroName } from "./api";
 import { useHistory, Redirect } from "react-router";
-import {Button, Card, Container,Grid} from 'react-bootstrap';
+import {Button, Card, Container,Grid, Row,Col,Alert,Form} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const validate = (values)=>{
     let errors={};
@@ -30,50 +30,66 @@ const Search = ({addTeam})=>{
             },
         });
         return(
-            <form onSubmit={formik.handleSubmit} >
-                <label htmlFor="name"> Search </label>
-                <input
-                 id="name"
-                 name="name"
-                 type="search"
-                 onChange={formik.handleChange}
-                 onBlur={formik.handleBlur}
-                 value={formik.values.name} 
+            <Form onSubmit={formik.handleSubmit} >
+                <Form.Group>
+                <Form.Label htmlFor="name"> Search </Form.Label>
+                <Form.Control 
+                size="sm"
+                id="name"
+                name="name"
+                type="text"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
                 />
-                {formik.touched.name && formik.errors.name ? <div>{formik.errors.name}</div>:null}
-                <br/><Button type="submit" variant="primary mb-2">search</Button>{' '}
+                {formik.touched.name && formik.errors.name ? (
+                
+                    <Alert size="lg" variant="danger center mt-2 mb-0">
+                        {formik.errors.name}
+                    </Alert>
+                
+                ):null}
+                </Form.Group>
+                
+                <Button type="submit" variant="primary mb-2">search</Button>{' '}
                 <br/><Button type="button"  variant="primary mb-2" onClick={()=>{history.push('/heroes')}}>check my team</Button>
-            </form>
+                
+            </Form>
         )
     }
         const displayResults = heroSearch.length ? (
             heroSearch.map((hero,i) =>{
                 return(
-                    <Container key={hero.id}>
-                        <Card style={{width:'18rem'}}>
+                    
+                    <Col sm={12} md={6} lg={4}>                
+                       <Card  className="m-3" lg={12} md={6} style={{width:'18rem'}} key={hero.id}>
                             <Card.Body>
                                 <Card.Title variant="center">
                                     {hero.name}
                                 </Card.Title>
-                                <Card.Img variant="bottom" size="small" src={hero.image.url} />
-                                <Button variant="primary mt-3 mb-2" onClick={()=>{addTeam(heroSearch[i])}}>add to team</Button>
-
+                                <Card.Img variant="bottom"  src={hero.image.url} />
+                                <div className="d-grid">
+                                <Button variant="primary mt-3 mb-2" size="lg"  onClick={()=>{addTeam(heroSearch[i])}}>add to team</Button>
+                                </div>
                             </Card.Body>
                         </Card>
-                    </Container>
+                    </Col> 
                 )
             })
-        ):(<span> no results yet</span>)
+        ):(null)
 
     if(!window.localStorage.isLogged ){
         return  <Redirect to="/"/>
             }else{
          return(
-                 <div variant="container">
-                     <Container variant="center">
-                    <SearchForm />
-                    {displayResults}
-                    </Container>
+                <div>
+                <Container variant="center">
+                     <SearchForm />
+                    <Row > 
+                        {displayResults}
+                    </Row> 
+                </Container>
+               
                 </div>
                )
             }

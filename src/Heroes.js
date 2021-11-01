@@ -1,6 +1,6 @@
 import React, { useState,useEffect,useLayoutEffect } from 'react';
 import {Redirect, useHistory} from 'react-router-dom'
-
+import {Button, Card, Container, Row,Col, Navbar} from 'react-bootstrap';
 
 function Heroes({team,deleteMember}){
     const [teamUp,setTeamUp] = useState(team)
@@ -23,39 +23,25 @@ function Heroes({team,deleteMember}){
        history.push("/search")
     
     }
-    //const [members] =team;
-    const [totalStats] = team;
-    console.log(totalStats)
-    const teamStats =  team[1] && team[1].length? (
-        
-        team[1].map((stat,i)  =>{
-            return(
-            <div key={i}>
-                <p>stats</p>
-                <ul> combat : {stat.combat} </ul>    
-                <ul> durability :{stat.durability} </ul> 
-                <ul> combat :{stat.combat} </ul> 
-                <ul> combat :{stat.combat} </ul> 
-                <ul> combat :{stat.combat} </ul> 
-                <ul> combat :{stat.combat} </ul> 
-            </div>
-        )
-    })
-    ):(null)
-
     const displayTeam =  team[0] && team[0].length>0 ? (
             team[0].map((member,i) =>{
             return(
-                <div key={member.id}>
-                    <h3> {member.name}</h3>
-                    < img alt="profile" src={member.image} width="200" height="200"/><br />
-                    <button>more details</button>
-                    <button onClick={()=>{eraser(member)}}>remove</button>
-                </div>
+                <Col sm={12} md={6} lg={4}>                
+                <Card key={member.id}  className="m-3" lg={12} md={6} style={{width:'18rem'}} >
+                     <Card.Body>
+                         <Card.Title variant="center">
+                            {member.name}
+                         </Card.Title>
+                         <Card.Img variant="bottom"  src={member.image} />
+                         <div className="d-grid">
+                         <Button variant="primary mt-3 mb-2" size="lg"  onClick={()=>{eraser(member)}}>Remove</Button>
+                         </div>
+                     </Card.Body>
+                 </Card>
+             </Col> 
             )
         })
-    ):(null)
-
+    ):(null)                    
     //useLayoutEffect(()=>{
     //},[])
 
@@ -63,13 +49,22 @@ function Heroes({team,deleteMember}){
         return <Redirect to="/"/>;
     }else{
         return(
-        <div>
-            <h3>Build your team of Super heroes! </h3>
-                <button onClick={()=>{logOut()}}>log out</button>
-                <button onClick={()=>console.log("test")}>Heroes</button>
-                <button onClick={()=>{history.push('/search')}}>Search heroes</button>
-                {teamStats}
-                {displayTeam}
+            <div>        
+                <Navbar bg="primary" variant="dark">
+                        <Container>
+                        <Navbar.Brand >
+                        Build your team of heroes!
+                        </Navbar.Brand>
+                        </Container>
+                    </Navbar>
+                <Container>
+                <Button variant="secondary mt-3" onClick={()=>{logOut()}}>log out</Button>
+                <Button variant="primary mt-3" onClick={()=>{history.push('/search')}}>Search heroes</Button>
+                
+            </Container>
+            <Row>
+            {displayTeam}
+            </Row>
         </div>
         )}
     }
